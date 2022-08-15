@@ -1,14 +1,14 @@
-CREATE DATABASE auth;
-USE auth;
+SELECT 'CREATE DATABASE auth' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'auth')\gexec
+\c auth;
 
 CREATE TABLE status(
-	id INT NOT NULL AUTO_INCREMENT,
+	id SERIAL,
 	name VARCHAR(40) NOT NULL,
 	PRIMARY KEY (id)
 );
 
 CREATE TABLE users(
-	id INT NOT NULL AUTO_INCREMENT,
+	id SERIAL,
 	first_name VARCHAR(80) NOT NULL,
 	last_name VARCHAR(80) NOT NULL,
 	nick_name VARCHAR(20) NOT NULL UNIQUE,
@@ -23,7 +23,7 @@ CREATE TABLE users(
 );
 
 CREATE TABLE services(
-	id INT NOT NULL AUTO_INCREMENT,
+	id SERIAL,
 	name VARCHAR(40) NOT NULL UNIQUE,
 	url VARCHAR(255) NOT NULL UNIQUE,
 	status_id INT DEFAULT 1,
@@ -34,11 +34,11 @@ CREATE TABLE services(
 );
 
 CREATE TABLE sessions(
-	id INT NOT NULL AUTO_INCREMENT,
+	id SERIAL,
 	device VARCHAR(150) NOT NULL,
 	date TIMESTAMP NOT NULL,
-	service_id INT NOT NULL,
-	status_id INT NOT NULL,
+	service_id INT,
+	status_id INT,
 	PRIMARY KEY (id),
 	FOREIGN KEY (service_id)
 	REFERENCES services (id)
@@ -49,9 +49,9 @@ CREATE TABLE sessions(
 );
 
 CREATE TABLE areas(
-	id INT NOT NULL AUTO_INCREMENT,
+	id SERIAL,
 	name VARCHAR(40),
-	service_id INT NOT NULL,
+	service_id INT,
 	PRIMARY KEY (id),
 	FOREIGN KEY (service_id)
 	REFERENCES services (id)
@@ -59,7 +59,7 @@ CREATE TABLE areas(
 );
 
 CREATE TABLE roles(
-	id INT NOT NULL AUTO_INCREMENT,
+	id SERIAL,
 	name VARCHAR(40),
 	status_id INT DEFAULT 1,
 	PRIMARY KEY (id),
@@ -68,36 +68,23 @@ CREATE TABLE roles(
 	ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
-CREATE TABLE areas_roles(
-	id INT NOT NULL AUTO_INCREMENT,
-	area_id INT NOT NULL,
-	role_id INT NOT NULL,
-	PRIMARY KEY (id),
-	FOREIGN KEY (area_id)
-	REFERENCES areas (id)
-	ON DELETE RESTRICT ON UPDATE CASCADE,
-	FOREIGN KEY (role_id)
-	REFERENCES roles (id)
-	ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
 CREATE TABLE actions(
-	id INT NOT NULL AUTO_INCREMENT,
+	id SERIAL,
 	name VARCHAR(40) NOT NULL UNIQUE,
 	PRIMARY KEY (id)
 );
 
 CREATE TABLE entities(
-	id INT NOT NULL AUTO_INCREMENT,
+	id SERIAL,
 	name VARCHAR(80) NOT NULL UNIQUE,
 	PRIMARY KEY (id)
 );
 
 CREATE TABLE permissions(
-	id INT NOT NULL AUTO_INCREMENT,
-	area_id INT NOT NULL,
-	action_id INT NOT NULL,
-	entity_id INT NOT NULL,
+	id SERIAL,
+	area_id INT,
+	action_id INT,
+	entity_id INT,
 	PRIMARY KEY (id),
 	FOREIGN KEY (area_id)
 	REFERENCES areas (id)
@@ -107,5 +94,31 @@ CREATE TABLE permissions(
 	ON DELETE RESTRICT ON UPDATE CASCADE,
 	FOREIGN KEY (entity_id)
 	REFERENCES entities (id)
+	ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+CREATE TABLE permissions_roles(
+	id SERIAL,
+	permission_id INT,
+	role_id INT,
+	PRIMARY KEY (id),
+	FOREIGN KEY (permission_id)
+	REFERENCES permissions (id)
+	ON DELETE RESTRICT ON UPDATE CASCADE,
+	FOREIGN KEY (role_id)
+	REFERENCES roles (id)
+	ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+CREATE TABLE users_roles(
+	id SERIAL,
+	user_id INT,
+	role_id INT,
+	PRIMARY KEY (id),
+	FOREIGN KEY (user_id)
+	REFERENCES users (id)
+	ON DELETE RESTRICT ON UPDATE CASCADE,
+	FOREIGN KEY (role_id)
+	REFERENCES roles (id)
 	ON DELETE RESTRICT ON UPDATE CASCADE
 );
