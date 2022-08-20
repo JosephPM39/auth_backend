@@ -25,6 +25,7 @@ module.exports = {
         js: 'never',
       },
     ],
+    "no-tabs": 0,
   },
   settings: {
     'import/resolver': {
