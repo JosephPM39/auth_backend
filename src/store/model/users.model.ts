@@ -1,18 +1,18 @@
-import { JTDDataType } from './tables.model';
+import { JTDDataType, TableSchemaBase } from './tables.model';
 
 // Schemas
 
 const BaseSchema = {
   type: 'object',
   properties: {
-    id: { type: 'int32' },
+    id: TableSchemaBase.properties.id,
     name: { type: 'string', minimum: 1, maximum: 80 },
     nick_name: { type: 'string', minimum: 1, maximum: 20 },
     pass: { type: 'string', minimum: 8, maximum: 255 },
     email: { type: 'string', format: 'email', maximum: 60 },
     date_up: { type: 'timestamp', format: 'date-time', parseDate: true },
     recovery_token: { type: 'string', maximum: 255, nullable: true },
-    status_id: { type: 'int32' },
+    status_id: TableSchemaBase.properties.id,
   },
   required: ['name', 'nick_name', 'email'],
 } as const;
@@ -61,7 +61,7 @@ const RecoverySchema = {
   required: ['recovery_token'],
 };
 
-export const Schemas = {
+export const UserSchemas = {
   base: BaseSchema,
   get: GetSchema,
   create: CreateSchema,
@@ -72,17 +72,26 @@ export const Schemas = {
 
 // Inferred types
 
-export type User = JTDDataType<typeof BaseSchema>;
+type User = JTDDataType<typeof BaseSchema>;
 
-export type GetUser = JTDDataType<typeof GetSchema>;
+type GetUser = JTDDataType<typeof GetSchema>;
 
-export type CreateUser = JTDDataType<typeof CreateSchema>;
+type CreateUser = JTDDataType<typeof CreateSchema>;
 
-export type UpdateUser = JTDDataType<typeof UpdateSchema>;
+type UpdateUser = JTDDataType<typeof UpdateSchema>;
 
-export type DeleteUser = JTDDataType<typeof DeleteSchema>;
+type DeleteUser = JTDDataType<typeof DeleteSchema>;
 
-export type RecoveryUser = JTDDataType<typeof RecoverySchema>;
+type RecoveryUser = JTDDataType<typeof RecoverySchema>;
+
+export type UserTypes = {
+  base: User,
+  get: GetUser,
+  create: CreateUser,
+  update: UpdateUser,
+  delete: DeleteUser,
+  recovery: RecoveryUser,
+}
 
 // Use example
 

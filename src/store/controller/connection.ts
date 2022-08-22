@@ -1,27 +1,28 @@
 import { Pool, Client } from 'pg';
 import config from '../config';
 
+const USER = encodeURIComponent(config.dbUser);
+const PASS = encodeURIComponent(config.dbPass);
 const credentials = {
-  user: config.dbUser,
-  host: config.dbHost,
-  database: config.dbName,
-  password: config.dbPass,
-  port: config.dbPort,
+  connectionString: `postgres://${USER}:${PASS}@${config.dbHost}`
+                    + `:${config.dbPort}/${config.dbName}`,
 };
 
 export default class Connection {
-  pool = new Pool(credentials);
+  private ConnectionMethod = Client;
 
-  runQuery(query: string) {
-    return this.pool.query(query);
+  private connection = new this.ConnectionMethod(credentials);
+
+  runQuery(query: string, values: any[]) {
+    return this.connection.query(query, values);
   }
 
   new() {
-    this.pool = new Pool(credentials);
+    this.connection = new this.ConnectionMethod(credentials);
   }
 
   end() {
-    this.pool.end();
+    this.connection.end();
   }
 }
 

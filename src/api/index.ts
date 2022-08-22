@@ -23,7 +23,7 @@ const createApp = () => {
   app.use(express.json());
 
   app.get('/', (req: Request, res: Response) => {
-    res.send('It\'s works');
+    res.send(`It's works ${req}`);
   });
 
   app.listen(port);
