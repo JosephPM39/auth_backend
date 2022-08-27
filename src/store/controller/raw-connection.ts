@@ -1,5 +1,5 @@
 import { Pool, Client } from 'pg';
-import config from '../config';
+import { config } from '../config';
 
 const USER = encodeURIComponent(config.dbUser);
 const PASS = encodeURIComponent(config.dbPass);

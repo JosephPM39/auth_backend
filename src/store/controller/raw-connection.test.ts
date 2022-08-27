@@ -1,4 +1,4 @@
-import { poolDemo } from './connection';
+import { poolDemo } from './raw-connection';
 
 test('Test pool connection to DB, to return now number day of week', async () => {
   const res = await poolDemo().then((res) => res.rows[0]);

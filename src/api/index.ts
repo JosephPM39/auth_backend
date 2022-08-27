@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors, { CorsOptions } from 'cors';
 import config from './config';
+import 'reflect-metadata';
 
 const createApp = () => {
   const app = express();
