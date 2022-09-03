@@ -1,4 +1,9 @@
 import { Connection } from './orm-connection';
+import { config } from '../config';
+
+if (config.env !== 'test') {
+  throw Error(`Current env isn't test, current env: ${config.env}`);
+}
 
 describe('ORM', () => {
   let con: Connection;

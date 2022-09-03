@@ -9,14 +9,14 @@ import {
   Entity, Column, ManyToOne,
 } from 'typeorm';
 import {
-  BaseModel,
-} from './base.model';
+  StatusModel,
+} from '../../..';
 import {
-  Status,
-} from './status.model';
+  BaseModel,
+} from '../../../base/data';
 
 @Entity()
-export class User extends BaseModel {
+export class UserModel extends BaseModel {
   @Length(1, 80)
   @IsString()
   @Column('varchar', { length: 80 })
@@ -46,11 +46,14 @@ export class User extends BaseModel {
   @Column('varchar', { length: 255 })
     recoveryToken: string;
 
-  @ManyToOne(() => Status, (status) => status.id, {
+  @ManyToOne(() => StatusModel, (status) => status.id, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
   })
-    status: Status;
+    status: StatusModel;
 }
 
-export default { User };
+export interface IUserModel extends UserModel{
+}
+
+export default { UserModel };

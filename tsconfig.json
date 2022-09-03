@@ -13,6 +13,9 @@
     "noUnusedLocals": false ,
     "noUnusedParameters": false ,
     "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@types", "./src/test.config/typings"],
     "strictPropertyInitialization": false
-  }
+  },
+  "include": ["./**/*"],
+  "exclude": ["node_modules", "src/**/*.spec.ts"]
 }

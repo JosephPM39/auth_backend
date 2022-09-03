@@ -30,7 +30,16 @@ module.exports = {
         js: 'never',
       },
     ],
-    "no-tabs": 0,
+    //'import/no-extraneous-dependencies': [
+    //  'error',
+    //  {
+    //    'dev-dependencies': [
+    //      '**/*.test.*',
+    //      '**/*.fake.*',
+    //    ],
+    //  },
+    //],
+    'no-tabs': 0,
   },
   settings: {
     'import/resolver': {

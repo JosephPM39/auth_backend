@@ -1,10 +1,10 @@
 import {
   DataSource, EntityTarget, Repository,
 } from 'typeorm';
-import { AppDataSource } from '../config';
+import { AppDataSource, EntitiesADS } from '../config';
 
 interface IConnection {
-  init(): Promise<true | Error>;
+  init(): Promise<boolean | Error>;
   getRepo<T>(entity: EntityTarget<T>): Promise<Repository<T>>;
   quit(): Promise<void>;
 }
@@ -15,37 +15,51 @@ const errors = {
 };
 
 export class Connection implements IConnection {
-  private source: DataSource | undefined;
+  private source?: DataSource;
+
+  private entities?: EntitiesADS;
+
+  constructor(entities?: EntitiesADS) {
+    this.entities = entities;
+  }
 
   async init() {
-    if (this.source) {
-      throw Error(errors.sourceDefined);
-    }
-    return AppDataSource.initialize()
-      .then((res) => {
-        this.source = res;
+    if (!this.source) {
+      const res = await this.initSource();
+      if (res) {
         return true;
-      })
-      .catch((error) => error);
+      }
+    }
+    return true;
+  }
+
+  async initSource() {
+    try {
+      const res = await AppDataSource(this.entities).initialize();
+      return res;
+    } catch (err) {
+      const error = err;
+      throw error;
+    }
   }
 
   async getRepo<T>(entity: EntityTarget<T>) {
     if (!this.source) {
-      throw Error(errors.sourceUndefined);
+      this.source = await this.initSource();
     }
     return this.source.getRepository(entity);
   }
 
   async rawQuery(query: string) {
     if (!this.source) {
-      throw Error(errors.sourceUndefined);
+      this.source = await this.initSource();
     }
     return this.source.query(query);
   }
 
   async quit() {
     if (!this.source) {
-      throw Error(errors.sourceUndefined);
+      this.source = await this.initSource();
     }
     await this.source.destroy();
     this.source = undefined;
