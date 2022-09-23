@@ -1,10 +1,10 @@
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { instanceToPlain, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import {
   UserCreateDTO, UserGetDTO, UserUpdateDTO, Store, UserModel,
 } from '../data';
-import { IController } from '../..';
+import { IController, BaseController } from '../..';
 import { IUserCreateDTO, IUserGetDTO } from '../data/dto/user.dto';
 
 type Id = UserGetDTO['id'];
@@ -28,25 +28,18 @@ const validateDTO = async (dto: object) => {
   }
 };
 
-export class UserController implements IController<
+export class UserController extends BaseController<UserModel>
+  implements IController<
   UserModel,
   IUserCreateDTO,
   Id,
   UserGetDTO,
   UserUpdateDTO
 > {
-  private repo: Repository<UserModel>;
-
-  private connection: Store;
-
   constructor(
     connection: Store,
   ) {
-    this.connection = connection;
-  }
-
-  async init() {
-    this.repo = await this.connection.getRepo(UserModel);
+    super(connection, UserModel);
   }
 
   async read(id?: Id | UserGetDTO | string) {

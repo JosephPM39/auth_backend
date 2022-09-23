@@ -4,7 +4,7 @@ import { UserModel } from './user/data';
 export { Store } from './base/data';
 export { BaseModel } from './base/data';
 
-export { IController } from './base/controller';
+export { IController, BaseController } from './base/controller';
 
 export const AllEntities = {
   StatusModel,
